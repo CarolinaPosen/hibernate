@@ -2,6 +2,7 @@ package by.itacademy.mikhalevich;
 
 
 import by.itacademy.mikhalevich.model.Passenger;
+import by.itacademy.mikhalevich.singleton.EntityManagerHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,10 +14,11 @@ import javax.persistence.EntityTransaction;
 public class Start {
     public static void main(String[] args) {
 
-        Configuration cfg = new Configuration().configure();
+/*        Configuration cfg = new Configuration().configure();
         SessionFactory sf = cfg.buildSessionFactory();
+        EntityManager em = sf.createEntityManager();*/
 
-        EntityManager em = sf.createEntityManager();
+        EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
