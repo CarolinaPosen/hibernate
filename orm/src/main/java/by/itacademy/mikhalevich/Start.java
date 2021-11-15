@@ -10,18 +10,28 @@ import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 public class Start {
     public static void main(String[] args) {
 
-/*        Configuration cfg = new Configuration().configure();
-        SessionFactory sf = cfg.buildSessionFactory();
-        EntityManager em = sf.createEntityManager();*/
+        fillDb();
+
 
         EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
+
+        tx.commit();
+        em.close();
+
+//        ReturnTrip toHome = ReturnTrip.builder()
+//
+//                .transferTimeIn(Date.from(LocalDate.of(2000, 10, 3).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+//                .transferTimeOut(Date.from(LocalDate.of(2000, 10, 5).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+//                .build();
 
 
 //                em.createQuery("from Trip ", Trip.class).getResultList().forEach(Start::printWithPrefix);
@@ -74,17 +84,17 @@ public class Start {
 
 //        em.createQuery("from Passenger ", Passenger.class).getResultList().forEach(Start::printWithPrefix);
 
-        Credentials credentials;
-        Passenger passenger = Passenger.builder()
-
-                .name("Cristian Bale")
-                .credentials(credentials = Credentials.builder()
-                        .login("Cristian")
-                        .password("asd123")
-                        .build())
-                .build();
-        credentials.setPassenger(passenger);
-        em.persist(passenger);
+//        Credentials credentials;
+//        Passenger passenger = Passenger.builder()
+//
+//                .name("Cristian Bale")
+//                .credentials(credentials = Credentials.builder()
+//                        .login("Cristian")
+//                        .password("asd123")
+//                        .build())
+//                .build();
+//        credentials.setPassenger(passenger);
+//        em.persist(passenger);
 
 //        ManyToMany Bill - Service
 
@@ -113,10 +123,6 @@ public class Start {
 //        System.out.println(passenger);
 
 
-        tx.commit();
-        em.close();
-
-
 /*        Session session = sf.openSession();
         Transaction transaction = session.beginTransaction();
 
@@ -127,6 +133,68 @@ public class Start {
         transaction.commit();
         session.close();*/
 
+    }
+
+    private static void fillDb(){
+        EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        Credentials credentials;
+        Passenger cristian = Passenger.builder()
+                .name("Cristian Bale")
+                .credentials(credentials = Credentials.builder()
+                        .login("Cristian")
+                        .password("asd123")
+                        .build())
+                .build();
+        credentials.setPassenger(cristian);
+
+        Service reservation = Service.builder()
+                .name("Reservation")
+                .price(10)
+                .build();
+
+        Service insurance = Service.builder()
+                .name("Insurance")
+                .price(100)
+                .build();
+
+        Set<Service> services = new HashSet<>(List.of(insurance, reservation));
+
+        Bill cristianBill = Bill.builder()
+                .passenger(cristian)
+                .services(services)
+                .trips(new HashSet<>())
+                .build();
+
+        Company company;
+        Ident baw;
+
+        TransferTrip moscowParisWarsaw = TransferTrip.builder()
+                .company(company = Company.builder()
+                        .name("British_AW")
+                        .ident(baw = Ident.builder()
+                                .serial("BAW")
+                                .build())
+                        .build())
+                .bills(new HashSet<>())
+                .townFrom("Moscow")
+                .townTo("Warsaw")
+                .transferTown("Paris")
+                .plane("Boing")
+                .timeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .timeOut(Date.from(LocalDate.of(2000, 10, 10).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .transferTimeIn(Date.from(LocalDate.of(2000, 10, 3).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .transferTimeOut(Date.from(LocalDate.of(2000, 10, 5).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+
+        moscowParisWarsaw.addBill(cristianBill);
+
+        em.persist(cristian);
+        em.persist(moscowParisWarsaw);
+        tx.commit();
+        em.close();
     }
 
     private static void printWithPrefix(Object obj) {

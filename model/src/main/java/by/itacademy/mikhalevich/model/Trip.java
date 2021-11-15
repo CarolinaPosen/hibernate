@@ -1,16 +1,21 @@
 package by.itacademy.mikhalevich.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "class_name")
 @Entity
 public class Trip extends AbstractEntity {
 
@@ -18,11 +23,11 @@ public class Trip extends AbstractEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "trip_bill",
             joinColumns = @JoinColumn(name = "bill_id"),
             inverseJoinColumns = @JoinColumn(name = "trip_id"))
-    private Set<Bill> bills = new LinkedHashSet<>();
+    private Set<Bill> bills = new HashSet<>();
 
     public void addBill(Bill bill) {
         bills.add(bill);
@@ -40,8 +45,8 @@ public class Trip extends AbstractEntity {
     @Column(name = "town_to")
     private String townTo;
     @Column(name = "time_out")
-    private Timestamp timeOut;
+    private Date timeOut;
     @Column(name = "time_in")
-    private Timestamp timeIn;
+    private Date timeIn;
 
 }

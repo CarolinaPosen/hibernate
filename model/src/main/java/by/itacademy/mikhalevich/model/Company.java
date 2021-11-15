@@ -1,6 +1,7 @@
 package by.itacademy.mikhalevich.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name="company", schema = "public")
 public class Company extends AbstractEntity {

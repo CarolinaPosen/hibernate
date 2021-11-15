@@ -3,11 +3,14 @@ package by.itacademy.mikhalevich.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,13 +24,13 @@ public class Bill extends AbstractEntity {
     private Passenger passenger;
 
     @ManyToMany(mappedBy = "bills")
-    private Set<Trip> trips = new LinkedHashSet<>();
+    private Set<Trip> trips = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "bill_service",
             joinColumns = @JoinColumn(name = "service_id"),
             inverseJoinColumns = @JoinColumn(name = "bill_id"))
-    private Set<Service> services = new LinkedHashSet<>();
+    private Set<Service> services = new HashSet<>();
 
     public void addTrip(Trip trip) {
         trips.add(trip);
