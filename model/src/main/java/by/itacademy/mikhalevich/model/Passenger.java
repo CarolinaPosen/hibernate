@@ -12,7 +12,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Entity;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -29,7 +28,7 @@ public class Passenger extends AbstractEntity {
 
     @OneToOne(mappedBy = "passenger", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private Credentials credentials;
+    private Credential credentials;
 
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL)
     Set<Bill> bills = new LinkedHashSet<>();

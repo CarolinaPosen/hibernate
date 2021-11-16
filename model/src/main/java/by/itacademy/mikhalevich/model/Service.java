@@ -23,7 +23,4 @@ public class Service extends AbstractEntity {
     @ManyToMany(mappedBy = "services", cascade = CascadeType.ALL)
     private Set<Bill> bills = new LinkedHashSet<>();
 
-
-
-
 }

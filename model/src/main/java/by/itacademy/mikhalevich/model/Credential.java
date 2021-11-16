@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-public class Credentials {
+public class Credential {
     @Id
     @Column(name = "passenger_id")
     private Integer id;

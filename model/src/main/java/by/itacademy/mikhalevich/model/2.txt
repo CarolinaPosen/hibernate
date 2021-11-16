@@ -13,23 +13,23 @@
 --
 CREATE TABLE company (
 	id serial4 NOT null PRIMARY KEY,
-	name char (10) NOT null,
+	name varchar (25) NOT null,
 	ident_id int4 NULL
 )
 ;
 
 CREATE TABLE ident (
 	id serial4 NOT null PRIMARY key,
-	serial char (10) NOT NULL
+	serial varchar (10) NOT NULL
 )
 ;
 
 CREATE TABLE trip (
 	id serial4 NOT NULL PRIMARY KEY,
 	company_id int NOT NULL ,
-	plane char (10) NOT NULL ,
-	town_from char (25) NOT NULL ,
-	town_to char (25) NOT NULL ,
+	plane varchar (20) NOT NULL ,
+	town_from varchar (25) NOT NULL ,
+	town_to varchar (25) NOT NULL ,
 	time_out timestamp NOT NULL ,
 	time_in timestamp NOT null ,
 	class_name varchar(20) not null
@@ -38,7 +38,7 @@ CREATE TABLE trip (
 
 CREATE TABLE transfer_trip (
     id int8 not null,
-	transfer_town char (25) NOT NULL ,
+	transfer_town varchar (25) NOT NULL ,
 	transfer_time_out timestamp NOT NULL ,
 	transfer_time_in timestamp NOT NULL
 )
@@ -73,22 +73,22 @@ CREATE TABLE bill_service(
 
 CREATE TABLE service (
 	id serial4 NOT NULL PRIMARY KEY,
-	name char (20) NOT null,
+	name varchar (40) NOT null,
 	price int8 NOT null
 )
 ;
 
 CREATE TABLE passenger (
 	id serial4 NOT NULL PRIMARY KEY,
-	name char (20) NOT NULL
+	name varchar (40) NOT NULL
 )
 ;
 
-create table credentials
+create table credential
 (
     passenger_id  int8,
-    login      varchar(20) not null,
-    "password" varchar(20) not null
+    login      varchar(40) not null,
+    "password" varchar(40) not null
 );
 
 

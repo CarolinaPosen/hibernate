@@ -1,31 +1,54 @@
 package by.itacademy.mikhalevich;
-
-
 import by.itacademy.mikhalevich.model.*;
 import by.itacademy.mikhalevich.singleton.EntityManagerHelper;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
 public class Start {
+
+    public static final int COUNT_OF_TRIPS = 5;
+
     public static void main(String[] args) {
 
-        fillDb();
+//        fillDb();
 
 
         EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
+        List<Passenger> passengers;
+
+        //select several fields to dto
+//        TypedQuery<Company> query = em.createQuery("select t.company from Trip t", Company.class);
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+//        //select several fields untyped
+//        Query query = em.createQuery("select t.plane, t.company from Trip t");
+//        query.getResultList().stream().flatMap(a -> Arrays.stream((Object[]) a)).forEach(Start::printWithPrefix1);
+
+
+        //select field
+//        TypedQuery<String> query = em.createQuery("select c.login from Credentials c", String.class);
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+//        select
+//         TypedQuery<Passenger> query = em.createQuery("select p from Passenger p", Passenger.class);
+//         query.getResultList().forEach(Start::printWithPrefix1);
+
+//         from
+//        TypedQuery<Passenger> query = em.createQuery("from Passenger ", Passenger.class);
+//        printWithPrefix(query);
+
         tx.commit();
         em.close();
+
 
 //        ReturnTrip toHome = ReturnTrip.builder()
 //
@@ -136,69 +159,138 @@ public class Start {
     }
 
     private static void fillDb(){
-        EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
 
-        Credentials credentials;
-        Passenger cristian = Passenger.builder()
-                .name("Cristian Bale")
-                .credentials(credentials = Credentials.builder()
-                        .login("Cristian")
-                        .password("asd123")
-                        .build())
-                .build();
-        credentials.setPassenger(cristian);
+        List<String> fName = Arrays.asList("Jim", "Fred", "Baz", "Bing");
+        List<String> lName = Arrays.asList("Duck", "Swan", "Cooper", "Bing");
+        List<String> serviceNameList = Arrays.asList("Reservation", "Insurance", "Nnutrition", "Baggage");
+        List<String> airlinesList = Arrays.asList("Turkish Airlines", "Singapore Airlines", "American Airlines", "Lufthansa");
+        List<String> citiesList = Arrays.asList("Moscow", "Warsaw", "Paris", "Frankfurt", "Osaka", "New York");
+        List<String> planeList = Arrays.asList("Boeing", "TU-154", "IL-86", "TU-134", "Airbus A220", "Fokker F28");
 
-        Service reservation = Service.builder()
-                .name("Reservation")
-                .price(10)
-                .build();
+        for (int i = 0; i < COUNT_OF_TRIPS; i++) {
 
-        Service insurance = Service.builder()
-                .name("Insurance")
-                .price(100)
-                .build();
+            EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
 
-        Set<Service> services = new HashSet<>(List.of(insurance, reservation));
+            Collections.shuffle(fName);
+            Collections.shuffle(lName);
+            Collections.shuffle(serviceNameList);
+            Collections.shuffle(airlinesList);
+            Collections.shuffle(citiesList);
+            Collections.shuffle(planeList);
 
-        Bill cristianBill = Bill.builder()
-                .passenger(cristian)
-                .services(services)
-                .trips(new HashSet<>())
-                .build();
+            String passengerFirstName = fName.stream().findAny().get();
+            String passengerLastName = lName.stream().findAny().get();
+            String passengerName = passengerFirstName + " " + passengerLastName;
+            String passengerLogin = passengerFirstName + "@gmail.com";
+            String passengerPassword = passengerLastName + "123";
+            String airlines = airlinesList.stream().findAny().get();
 
-        Company company;
-        Ident baw;
+            Credential credentials;
+            Passenger passenger = Passenger.builder()
+                    .name(passengerName)
+                    .credentials(credentials = Credential.builder()
+                            .login(passengerLogin)
+                            .password(passengerPassword)
+                            .build())
+                    .build();
+            credentials.setPassenger(passenger);
 
-        TransferTrip moscowParisWarsaw = TransferTrip.builder()
-                .company(company = Company.builder()
-                        .name("British_AW")
-                        .ident(baw = Ident.builder()
-                                .serial("BAW")
+            Service reservation = Service.builder()
+                    .name(String.valueOf(serviceNameList.stream().findAny().get()))
+                    .price((int) (Math.random() * 10))
+                    .build();
+
+            Service insurance = Service.builder()
+                    .name(String.valueOf(serviceNameList.stream().findAny().get()))
+                    .price((int) (Math.random() * 10))
+                    .build();
+
+            Set<Service> services = new HashSet<>(List.of(insurance, reservation));
+
+            Bill bill = Bill.builder()
+                    .passenger(passenger)
+                    .services(services)
+                    .trips(new HashSet<>())
+                    .build();
+
+            Company company;
+            Ident baw;
+            Trip trip;
+
+            if(i%2==0){
+
+
+                 trip = TransferTrip.builder()
+                        .company(company = Company.builder()
+                                .name(airlines)
+                                .ident(baw = Ident.builder()
+                                        .serial(airlines.substring(0, 3).toUpperCase())
+                                        .build())
                                 .build())
-                        .build())
-                .bills(new HashSet<>())
-                .townFrom("Moscow")
-                .townTo("Warsaw")
-                .transferTown("Paris")
-                .plane("Boing")
-                .timeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .timeOut(Date.from(LocalDate.of(2000, 10, 10).atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .transferTimeIn(Date.from(LocalDate.of(2000, 10, 3).atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .transferTimeOut(Date.from(LocalDate.of(2000, 10, 5).atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .build();
+                        .bills(new HashSet<>())
+                        .townFrom(citiesList.stream().findAny().get())
+                        .townTo(citiesList.stream().findAny().get())
+                        .transferTown(citiesList.stream().findAny().get())
+                        .plane(planeList.stream().findAny().get())
+                        .timeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .timeOut(Date.from(LocalDate.of(2000, 10, 10).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .transferTimeIn(Date.from(LocalDate.of(2000, 10, 3).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .transferTimeOut(Date.from(LocalDate.of(2000, 10, 5).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .build();
+                trip.addBill(bill);
 
-        moscowParisWarsaw.addBill(cristianBill);
+            } else {
 
-        em.persist(cristian);
-        em.persist(moscowParisWarsaw);
-        tx.commit();
-        em.close();
+                trip = ReturnTrip.builder()
+                        .company(company = Company.builder()
+                                .name(airlines)
+                                .ident(baw = Ident.builder()
+                                        .serial(airlines.substring(0, 3).toUpperCase())
+                                        .build())
+                                .build())
+                        .bills(new HashSet<>())
+                        .townFrom(citiesList.stream().findAny().get())
+                        .townTo(citiesList.stream().findAny().get())
+                        .returnTimeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .returnTimeOut(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .plane(planeList.stream().findAny().get())
+                        .timeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .timeOut(Date.from(LocalDate.of(2000, 10, 10).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                        .build();
+                trip.addBill(bill);
+            }
+
+            em.persist(passenger);
+            em.persist(trip);
+            tx.commit();
+            em.close();
+
+        }
+
     }
 
-    private static void printWithPrefix(Object obj) {
+    private static void printWithPrefix1(Object obj) {
         System.out.println("!!!" + obj);
+    }
+
+    private static void printWithPrefix(TypedQuery query) {
+
+        List l =query.getResultList();
+        System.out.println("Total Number Of Records : "+l.size());
+        Iterator it = l.iterator();
+
+        while(it.hasNext())
+        {
+//            Object o = (Object)it.next();
+//            Passenger p = (Passenger) o;
+//            System.out.println("Passenger id : "+p.getId());
+//            System.out.println("Passenger Name : "+p.getName());
+//            System.out.println("Passenger Login : "+p.getCredentials());
+//            System.out.println("Count of bills : "+p.getBills().size());
+            System.out.println("----------------------");
+        }
     }
 
 }
