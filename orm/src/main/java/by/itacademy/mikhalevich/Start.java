@@ -1,10 +1,11 @@
 package by.itacademy.mikhalevich;
+import com.itacademy.mikhalevich.dto.PassengerDto;
 import by.itacademy.mikhalevich.model.*;
 import by.itacademy.mikhalevich.singleton.EntityManagerHelper;
+import com.itacademy.mikhalevich.dto.ResultDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,12 +19,43 @@ public class Start {
 
 //        fillDb();
 
-
         EntityManager em = EntityManagerHelper.getInstance().getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         List<Passenger> passengers;
+
+        //select left outer explicit join with dto
+        TypedQuery<Trip> query = em.createQuery(
+                "select t from Trip t join fetch t.bills", Trip.class);
+        query.getResultList().forEach(Start::printWithPrefix1);
+
+
+        //select left outer explicit join with dto
+//        TypedQuery<ResultDto> query = em.createQuery(
+//                "select new com.itacademy.mikhalevich.dto.ResultDto(c.name, t.plane, t.townFrom, t.townTo) from Trip t join t.company c", ResultDto.class);
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+        //select left outer explicit join
+//        TypedQuery<Company> query = em.createQuery("select c from Trip t join t.company c", Company.class);
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+        //select left outer implicit join
+//        TypedQuery<Company> query = em.createQuery("select distinct t.company from Trip t", Company.class);
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+        //Named Query select several fields with filtering by param
+//        TypedQuery<PassengerDto> query = em.createNamedQuery("byName", PassengerDto.class);
+//        query.setParameter("name", "Jim Cooper");
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+        //select several fields with filtering by param
+//        TypedQuery<String> query = em.createQuery("select c.name from Company c where c.ident.serial = :name", String.class);
+//        query.setParameter("name", "SIN");
+//        query.getResultList().forEach(Start::printWithPrefix1);
+
+//        TypedQuery<Company> query = em.createQuery("select t.company from Trip t where t.company.name like 'S%'", Company.class );
+//        query.getResultList().forEach(Start::printWithPrefix1);
 
         //select several fields to dto
 //        TypedQuery<Company> query = em.createQuery("select t.company from Trip t", Company.class);
@@ -251,8 +283,8 @@ public class Start {
                                         .build())
                                 .build())
                         .bills(new HashSet<>())
-                        .townFrom(citiesList.stream().findAny().get())
-                        .townTo(citiesList.stream().findAny().get())
+                        .townFrom(citiesList.stream().findFirst().get())
+                        .townTo(citiesList.stream().skip(1).findAny().get())
                         .returnTimeIn(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
                         .returnTimeOut(Date.from(LocalDate.of(2000, 10, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
                         .plane(planeList.stream().findAny().get())

@@ -11,6 +11,7 @@
   <modules>
     <module>orm</module>
     <module>model</module>
+    <module>view</module>
   </modules>
 
   <packaging>pom</packaging>

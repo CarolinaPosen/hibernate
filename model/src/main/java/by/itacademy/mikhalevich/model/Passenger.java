@@ -7,11 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,6 +18,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 @Entity
+//@NamedQueries(@NamedQuery(name = "byName", query = "select new by.itacademy.mikhalevich.dto.PassengerDto(p.name) from Passenger p where p.name = :name"))
+@NamedQuery(name = "byName", query = "select new com.itacademy.mikhalevich.dto.PassengerDto(p.name) from Passenger p where p.name = :name")
 public class Passenger extends AbstractEntity {
 
     private String name;
