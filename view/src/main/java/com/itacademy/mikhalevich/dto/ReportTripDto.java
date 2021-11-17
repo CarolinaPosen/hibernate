@@ -9,10 +9,8 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripDto {
+public class ReportTripDto {
     private String plane;
     private String townFrom;
     private String townTo;
-    private Date timeOut;
-    private Date timeIn;
 }

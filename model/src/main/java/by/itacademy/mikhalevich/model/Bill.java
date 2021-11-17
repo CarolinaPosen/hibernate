@@ -14,8 +14,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"trips", "passenger"})
-@EqualsAndHashCode(callSuper = false, exclude = {"trips", "passenger"})
+@ToString(callSuper = true, exclude = {"trip","passenger"})
+@EqualsAndHashCode(callSuper = false, exclude = {"trip","passenger"})
 @Entity
 public class Bill extends AbstractEntity {
 
@@ -23,8 +23,9 @@ public class Bill extends AbstractEntity {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @ManyToMany(mappedBy = "bills")
-    private Set<Trip> trips = new HashSet<>();
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "bill_service",
@@ -32,14 +33,14 @@ public class Bill extends AbstractEntity {
             inverseJoinColumns = @JoinColumn(name = "bill_id"))
     private Set<Service> services = new HashSet<>();
 
-    public void addTrip(Trip trip) {
-        trips.add(trip);
-        trip.getBills().add(this);
+    public void addService(Service service) {
+        services.add(service);
+        service.getBills().add(this);
     }
 
-    public void removeTrip(Trip trip) {
-        trips.remove(trip);
-        trip.getBills().remove(this);
+    public void removeService(Service service) {
+        services.remove(service);
+        service.getBills().remove(this);
     }
 
 }

@@ -18,7 +18,6 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 @Entity
-//@NamedQueries(@NamedQuery(name = "byName", query = "select new by.itacademy.mikhalevich.dto.PassengerDto(p.name) from Passenger p where p.name = :name"))
 @NamedQuery(name = "byName", query = "select new com.itacademy.mikhalevich.dto.PassengerDto(p.name) from Passenger p where p.name = :name")
 public class Passenger extends AbstractEntity {
 
@@ -41,4 +40,17 @@ public class Passenger extends AbstractEntity {
         return this;
     }
 
+    public void addBill(Bill bill) {
+        bills.add(bill);
+        bill.setPassenger(this);
+    }
+
+    public void removeBill(Bill bill) {
+        bills.remove(bill);
+        bill.setPassenger(this);
+    }
+
+    public Passenger(String name) {
+        this.name = name;
+    }
 }

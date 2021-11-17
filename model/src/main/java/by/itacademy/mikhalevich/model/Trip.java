@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
@@ -21,20 +22,13 @@ public class Trip extends AbstractEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
-    @JoinTable(name = "trip_bill",
-            joinColumns = @JoinColumn(name = "bill_id"),
-            inverseJoinColumns = @JoinColumn(name = "trip_id"))
-    private Set<Bill> bills = new HashSet<>();
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
+    private Set<Bill> bills = new LinkedHashSet<>();
+
 
     public void addBill(Bill bill) {
         bills.add(bill);
-        bill.getTrips().add(this);
-    }
-
-    public void removeBill(Bill bill) {
-        bills.remove(bill);
-        bill.getTrips().remove(this);
+        bill.setTrip(this);
     }
 
     private String plane;
