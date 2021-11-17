@@ -23,9 +23,22 @@
         <property name="hibernate.dbcp.maxIdle">10</property>
         <property name="hibernate.dbcp.minIdle">5</property>
         <property name="hibernate.dbcp.maxWaitMillis">-1</property>
+        <!-- Anti Pattern -->
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
 
         <!-- mapping files -->
-        <mapping resource="Passenger.hbm.xml"/>
+<!--        <mapping resource="Passenger.hbm.xml"/>-->
+
+        <mapping class="by.itacademy.mikhalevich.model.Ident"/>
+        <mapping class="by.itacademy.mikhalevich.model.Company"/>
+        <mapping class="by.itacademy.mikhalevich.model.Passenger"/>
+        <mapping class="by.itacademy.mikhalevich.model.Service"/>
+        <mapping class="by.itacademy.mikhalevich.model.Trip"/>
+        <mapping class="by.itacademy.mikhalevich.model.TransferTrip"/>
+        <mapping class="by.itacademy.mikhalevich.model.ReturnTrip"/>
+        <mapping class="by.itacademy.mikhalevich.model.Trip"/>
+        <mapping class="by.itacademy.mikhalevich.model.Bill"/>
+        <mapping class="by.itacademy.mikhalevich.model.Credential"/>
 
     </session-factory>
 

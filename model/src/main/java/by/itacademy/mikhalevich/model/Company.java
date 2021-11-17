@@ -1,34 +1,28 @@
 package by.itacademy.mikhalevich.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true, exclude = "trips")
+@EqualsAndHashCode(callSuper = true, exclude = "trips")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Company extends AbstractEntity<Integer> {
-    private BigDecimal salary;
-    private Timestamp date;
+@SuperBuilder
+@Entity
+@Table(name="company", schema = "public")
+public class Company extends AbstractEntity {
 
-    public Company withId(Integer id){
-        setId(id);
-        return this;
-    }
+    private String name;
 
-    public Company withSalary(BigDecimal salary) {
-        setSalary(salary);
-        return this;
-    }
-    public Company withDate(Timestamp date){
-        setDate(date);
-        return this;
-    }
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private Set<Trip> trips = new LinkedHashSet<>();
 
-
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private Ident ident;
 
 }

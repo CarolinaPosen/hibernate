@@ -1,21 +1,34 @@
 package by.itacademy.mikhalevich.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Passenger extends AbstractEntity<Integer> {
+@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
+@Entity
+@NamedQuery(name = "byName", query = "select new com.itacademy.mikhalevich.dto.PassengerDto(p.name) from Passenger p where p.name = :name")
+public class Passenger extends AbstractEntity {
 
     private String name;
+
+    @OneToOne(mappedBy = "passenger", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Credential credentials;
+
+    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL)
+    Set<Bill> bills = new LinkedHashSet<>();
 
     public Passenger withId(Integer id){
         setId(id);
@@ -27,15 +40,17 @@ public class Passenger extends AbstractEntity<Integer> {
         return this;
     }
 
-/*    public Passenger addSalary(Company company){
-        if(company !=null){
-            salaries.add(company);
-        }
-        return this;
-    }*/
+    public void addBill(Bill bill) {
+        bills.add(bill);
+        bill.setPassenger(this);
+    }
 
-    @Override
-    public String toString() {
-        return String.format("Passenger [id=%s, name=%s]", getId(), name);
+    public void removeBill(Bill bill) {
+        bills.remove(bill);
+        bill.setPassenger(this);
+    }
+
+    public Passenger(String name) {
+        this.name = name;
     }
 }
