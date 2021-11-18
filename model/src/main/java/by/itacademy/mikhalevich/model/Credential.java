@@ -29,4 +29,5 @@ public class Credential {
     @JoinColumn(name = "passenger_id")
     @MapsId
     private Passenger passenger;
+
 }

@@ -25,7 +25,6 @@ public class Trip extends AbstractEntity {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private Set<Bill> bills = new LinkedHashSet<>();
 
-
     public void addBill(Bill bill) {
         bills.add(bill);
         bill.setTrip(this);

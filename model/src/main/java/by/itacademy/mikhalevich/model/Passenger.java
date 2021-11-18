@@ -50,6 +50,11 @@ public class Passenger extends AbstractEntity {
         bill.setPassenger(this);
     }
 
+    public void addCredentials(Credential credential) {
+        this.credentials = credential;
+        credential.setPassenger(this);
+    }
+
     public Passenger(String name) {
         this.name = name;
     }

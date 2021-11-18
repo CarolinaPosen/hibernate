@@ -12,15 +12,17 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@ToString(callSuper = true, exclude = "bills")
-@EqualsAndHashCode(callSuper = false, exclude = "bills")
+//@ToString(callSuper = true, exclude = "bills")
+//@EqualsAndHashCode(callSuper = false, exclude = "bills")
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Entity
 public class Service extends AbstractEntity {
 
     private String name;
     private Integer price;
 
-    @ManyToMany(mappedBy = "services", cascade = CascadeType.ALL)
-    private Set<Bill> bills = new LinkedHashSet<>();
+//    @ManyToMany(mappedBy = "services", cascade = CascadeType.ALL)
+//    private Set<Bill> bills = new LinkedHashSet<>();
 
 }

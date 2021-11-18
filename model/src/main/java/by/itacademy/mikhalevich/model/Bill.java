@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 public class Bill extends AbstractEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
@@ -29,18 +29,18 @@ public class Bill extends AbstractEntity {
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "bill_service",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "bill_id"))
+            joinColumns = @JoinColumn(name = "bill_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<Service> services = new HashSet<>();
 
     public void addService(Service service) {
         services.add(service);
-        service.getBills().add(this);
+        //service.getBills().add(this);
     }
 
     public void removeService(Service service) {
         services.remove(service);
-        service.getBills().remove(this);
+        //service.getBills().remove(this);
     }
 
 }

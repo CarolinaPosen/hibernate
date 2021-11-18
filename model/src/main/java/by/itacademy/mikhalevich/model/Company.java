@@ -25,4 +25,9 @@ public class Company extends AbstractEntity {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private Ident ident;
 
+    public void addTrip(Trip trip){
+        trips.add(trip);
+        trip.setCompany(this);
+    }
+
 }
